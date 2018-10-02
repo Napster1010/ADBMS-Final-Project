@@ -79,12 +79,14 @@ public class InputForm extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
         jLabel2.setText("No. Of Transactions");
 
+        txtNumberOfTransactions.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
         txtNumberOfTransactions.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 txtNumberOfTransactionsFocusLost(evt);
             }
         });
 
+        txtNumberOfDataItems.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
         txtNumberOfDataItems.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 txtNumberOfDataItemsFocusLost(evt);
@@ -345,8 +347,14 @@ public class InputForm extends javax.swing.JFrame {
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         // TODO add your handling code here:
-        txtNumberOfTransactions.setEditable(true);
-        repaint();
+        txtNumberOfDataItems.setText("");
+        txtNumberOfTransactions.setText("");
+        txtNumberOfTransactions.setEnabled(true);
+        cmbAction.removeAllItems();
+        cmbTransaction.removeAllItems();
+        cmbDataItem.removeAllItems();
+        tableModel = (DefaultTableModel) jTable1.getModel();
+        tableModel.setRowCount(0);
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
