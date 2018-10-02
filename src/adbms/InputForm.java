@@ -7,6 +7,7 @@ package adbms;
 
 import java.awt.Font;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -71,6 +72,7 @@ public class InputForm extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Serializability and Recoverability Checker");
+        setSize(new java.awt.Dimension(0, 0));
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2), "BASIC INPUTS", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 13), new java.awt.Color(255, 0, 0))); // NOI18N
 
@@ -127,6 +129,16 @@ public class InputForm extends javax.swing.JFrame {
         cmbAction.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
         cmbAction.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Read", "Write", "Commit" }));
         cmbAction.setSelectedIndex(-1);
+        cmbAction.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                cmbActionFocusLost(evt);
+            }
+        });
+        cmbAction.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbActionActionPerformed(evt);
+            }
+        });
 
         cmbTransaction.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
 
@@ -317,7 +329,7 @@ public class InputForm extends javax.swing.JFrame {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 382, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -333,6 +345,8 @@ public class InputForm extends javax.swing.JFrame {
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         // TODO add your handling code here:
+        txtNumberOfTransactions.setEditable(true);
+        repaint();
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
@@ -340,9 +354,35 @@ public class InputForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-
-        tableModel = (DefaultTableModel) jTable1.getModel();
-        tableModel.addRow(new Object[]{cmbAction.getSelectedItem(), cmbTransaction.getSelectedItem(), cmbDataItem.getSelectedItem()});
+        if(cmbAction.getSelectedItem() == "Read" || cmbAction.getSelectedItem() == "Write") 
+        {
+            if(cmbTransaction.getSelectedItem() != null && cmbDataItem.getSelectedItem() != null)    
+            {
+                tableModel = (DefaultTableModel) jTable1.getModel();
+                tableModel.addRow(new Object[]{cmbAction.getSelectedItem(), cmbTransaction.getSelectedItem(), cmbDataItem.getSelectedItem()});
+            }
+            else
+            {
+                JOptionPane.showMessageDialog(null,"Please Enter All Fields","Serializability and Recoverability Checker",JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        
+        else if(cmbAction.getSelectedItem() == "Commit")
+        { 
+            if(cmbTransaction.getSelectedItem() != null)
+            {
+                int delete;
+                delete = Integer.parseInt((String) cmbTransaction.getSelectedItem());
+                tableModel = (DefaultTableModel) jTable1.getModel();
+                tableModel.addRow(new Object[]{cmbAction.getSelectedItem(), cmbTransaction.getSelectedItem(), ""});
+                cmbTransaction.removeItemAt(delete-1);
+            }
+            
+            else
+            {
+                JOptionPane.showMessageDialog(null,"Please Enter All Fields","Serializability and Recoverability Checker",JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void txtNumberOfTransactionsFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtNumberOfTransactionsFocusLost
@@ -354,6 +394,7 @@ public class InputForm extends javax.swing.JFrame {
                 cmbTransaction.addItem(String.valueOf(i));
                 cmbTransaction.setSelectedIndex(-1);
             }
+            txtNumberOfTransactions.setEnabled(false);
         }
     }//GEN-LAST:event_txtNumberOfTransactionsFocusLost
 
@@ -368,6 +409,22 @@ public class InputForm extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_txtNumberOfDataItemsFocusLost
+
+    private void cmbActionFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_cmbActionFocusLost
+        // TODO add your handling code here:
+        if (cmbAction.getSelectedItem() == "Commit")
+        {
+            cmbDataItem.setEnabled(false);
+        }        
+        else 
+        {
+            cmbDataItem.setEnabled(true);
+        }
+    }//GEN-LAST:event_cmbActionFocusLost
+
+    private void cmbActionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbActionActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbActionActionPerformed
 
     /**
      * @param args the command line arguments
