@@ -7,7 +7,7 @@ package adbms;
 
 /**
  *
- * @author Napster
+ * @author Aditya Tiwari
  */
 public class RecoverabilityResult extends javax.swing.JFrame {
 
@@ -41,6 +41,7 @@ public class RecoverabilityResult extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     /**

@@ -6,6 +6,7 @@
 package adbms;
 
 import java.awt.Font;
+import java.util.LinkedList;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
@@ -15,11 +16,12 @@ import javax.swing.table.TableCellRenderer;
 
 /**
  *
- * @author Napster
+ * @author Aditya Tiwari
  */
 public class InputForm extends javax.swing.JFrame {
 
     DefaultTableModel tableModel;
+    LinkedList<Task> schedule;
     /**
      * Creates new form InputForm
      */
@@ -335,12 +337,53 @@ public class InputForm extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
+        //Firstly form a linked list of type Task class objects. The list will be made rom the inputs provided by the user
+        createSchedule();
+        
     }//GEN-LAST:event_jButton4ActionPerformed
 
+    //Creates a schedule in the form of a linked list consisting of Task objects
+    void createSchedule()
+    {
+        //Linked list creation
+        schedule = new LinkedList<>();
+        
+        tableModel = (DefaultTableModel) jTable1.getModel();
+        int size = tableModel.getRowCount();
+        
+        String operation;
+        int transaction;
+        String dataItem;
+        
+        for(int i=0; i<size; i++)
+        {
+            operation = String.valueOf(tableModel.getValueAt(i, 0));
+            transaction = Integer.parseInt(String.valueOf(tableModel.getValueAt(i, 1)));
+            dataItem = String.valueOf(tableModel.getValueAt(i, 2));
+            Task task = new Task(operation, transaction, dataItem);
+            schedule.add(task);            
+        }
+        //------------------------------------------------------------
+        
+        //Serializability Processor
+        SerializabilityProcessor processor = new SerializabilityProcessor(schedule, Integer.parseInt(txtNumberOfTransactions.getText()));
+        boolean isConflictSerializable = processor.checkSerializability();
+        this.setVisible(false);
+        new SerializabilityResult(this, schedule).setVisible(true);
+        //--------------------------------------
+
+    }
+    
+    
+    
+    
+    
+    
+    
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton5ActionPerformed
