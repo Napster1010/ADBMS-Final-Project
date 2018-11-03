@@ -132,7 +132,6 @@ public class InputForm extends javax.swing.JFrame {
 
         cmbAction.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
         cmbAction.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Read", "Write", "Commit" }));
-        cmbAction.setSelectedIndex(-1);
         cmbAction.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 cmbActionFocusLost(evt);
@@ -398,6 +397,9 @@ public class InputForm extends javax.swing.JFrame {
         cmbDataItem.removeAllItems();
         tableModel = (DefaultTableModel) jTable1.getModel();
         tableModel.setRowCount(0);
+        cmbAction.addItem("Read");
+        cmbAction.addItem("Write");
+        cmbAction.addItem("Commit");
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed

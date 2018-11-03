@@ -221,7 +221,6 @@
                 <StringItem index="2" value="Commit"/>
               </StringArray>
             </Property>
-            <Property name="selectedIndex" type="int" value="-1"/>
           </Properties>
           <Events>
             <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="cmbActionFocusLost"/>
