@@ -21,13 +21,16 @@ import java.util.Set;
 public class SerializabilityProcessor {
 
     //Schedule
-    LinkedList<Task> schedule;
+    private LinkedList<Task> schedule;
     
     //Number of Transactions
-    int noOfTransactions;
+    private int noOfTransactions;
     
     //The adjacency List of the precedence graph
-    LinkedList<Task> adjList[];
+    private LinkedList<Task> adjList[];
+    
+    //Stores all the cycles present in the precedence graph
+    private List<String> cycles = new ArrayList<>();
 
     public SerializabilityProcessor(LinkedList<Task> schedule, int noOfTransactions) {
         this.schedule = schedule;
@@ -41,6 +44,12 @@ public class SerializabilityProcessor {
         }
     }
     
+    //Return the cycle
+    List<String> getCycles()
+    {
+        return cycles;
+    }
+    
     //Method which checks whether the given schedule is serializable or not
     boolean checkSerializability()
     {
@@ -51,6 +60,8 @@ public class SerializabilityProcessor {
         //Yet to be implemented
         boolean isCyclic = hasCycle();       
         System.out.println("\nCycle check: " + isCyclic);
+        
+        System.out.print(cycles);
         
         return !isCyclic;
     }        
@@ -123,7 +134,7 @@ public class SerializabilityProcessor {
         //Add all the nodes in the graph
         for(int i=1; i<=adjList.length; i++)
             unvisitedNodes.add(i);
-        
+
         while(unvisitedNodes.size()>0)
         {
             int current = unvisitedNodes.iterator().next();
@@ -144,12 +155,23 @@ public class SerializabilityProcessor {
                 continue;    //Node is already visited
             
             if(currentNodes.contains(adjacentNode))
-                return true; //Cycle exists at this node
+            {
+                int index = currentNodes.indexOf(adjacentNode);
+                String cycle = "T" + adjacentNode;
+                for(int j=(index + 1); j<currentNodes.size(); j++)
+                {
+                    cycle += " -> " + "T" + currentNodes.get(j);
+                }
+                cycle += " -> " + "T" + adjacentNode;
+                cycles.add(cycle);
+                return true; //Cycle exists at this node                
+            }
             
             if(performDFS(adjacentNode, unvisitedNodes, currentNodes, visitedNodes))
                 return true;                       
         }
-        
+
+        moveNode(current, currentNodes, visitedNodes);        
         return false;
     }
     

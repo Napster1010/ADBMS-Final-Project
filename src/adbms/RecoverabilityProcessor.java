@@ -6,8 +6,10 @@
 package adbms;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -15,91 +17,73 @@ import java.util.List;
  */
 public class RecoverabilityProcessor {
    
-    LinkedList<Task> schedule;
+    private LinkedList<Task> schedule;
     
     //Number of Transactions
-    int noOfTransactions;
+    private int noOfTransactions;
     
-    //The adjacency List of the precedence graph
-    LinkedList<Task> adjList[];
+    //Stores the indexes on which the transactions committed
+    private Map<Integer, Integer> commitOrderMap = new HashMap<>();
+    
+    //Stores the result of recoverability checker
+    private String result;
    
     public RecoverabilityProcessor(LinkedList<Task> schedule, int noOfTransactions) {
         this.schedule = schedule;
         this.noOfTransactions = noOfTransactions;
-
-        //Initialize the adjacency list
-        this.adjList = new LinkedList[noOfTransactions];
-        for(int i=0; i<noOfTransactions; i++)
-        {
-            adjList[i] = new LinkedList<>();
-        }
-            
+    }
+    
+    String getResult()
+    {
+        return result;
     }
     
     //Method which checks whether the given schedule is recoverable or not
     boolean checkRecoverability()
     {
-        //Implemented
-        formPrecedenceGraph();
-        checkCommit();
+        findCommitOrders();
+        System.out.println(commitOrderMap);
         
-       return true;
-    }        
-    
-    //Forms the precedence graph by identifying the conflict operations
-    private void formPrecedenceGraph()
-    {
-        Task from;
-        Task to;
+        boolean flag=false;
         for(int i=0; i<schedule.size(); i++)
         {
-            for(int j=i+1; j<schedule.size(); j++)
+            if("Write".equals(schedule.get(i).getOperation()))
             {
-                //If the two operations are conflicting then create a node from i to j
-                if(checkConflict(schedule.get(i), schedule.get(j)))
+                for(int j=i+1; j<schedule.size(); j++)
                 {
-                    from = schedule.get(i);
-                    to = schedule.get(j);
-                    
-                    boolean edgeExists=false;
-                    for(Task itr: adjList[from.getTransaction() - 1])
+                    if("Read".equals(schedule.get(j).getOperation()) && schedule.get(i).getDataItem().equals(schedule.get(j).getDataItem()) && (schedule.get(i).getTransaction() != schedule.get(j).getTransaction()))
                     {
-                        if(itr.getTransaction() == to.getTransaction())
-                            edgeExists = true;
+                        System.out.println("HELLLOOOOOOO");
+                        if(commitOrderMap.get(schedule.get(i).getTransaction()) > commitOrderMap.get(schedule.get(j).getTransaction()))
+                        {
+                            result = "The given schedule is not recoverable as\nTransaction-" + schedule.get(j).getTransaction() + " reads data item " + schedule.get(j).getDataItem() + " written\npreviously by Transaction-" + schedule.get(i).getTransaction() + " and commits\nbefore Transaction-" + schedule.get(i).getTransaction();
+                           flag = true;
+                           break;
+                        }
                     }
-                    if(!edgeExists)
-                        adjList[from.getTransaction() - 1].add(to);
                 }
+                if(flag)
+                    break;
             }
         }
-    }    
-    
-    //Checks whether the two operations are conflicting or not
-    private boolean checkConflict(Task t1, Task t2)
+        
+        if(flag)
+            return true;
+        else
+        {
+            result = "The given schedule is recoverable.";            
+            return false;
+        }
+    }            
+        
+    //Find the commit orders of all transactions in the given schedule
+    void findCommitOrders()
     {
-        //Both operations should be from different transactions and they should be on the same data item
-        if((t1.getTransaction() != t2.getTransaction()) && (t1.getDataItem().equals(t2.getDataItem())))
+        for(Task task: schedule)
         {
-            if(!(t1.getOperation().equals("Commit") || t2.getOperation().equals("Commit")) && !(t1.getOperation().equals("Read") && t2.getOperation().equals("Read")))
-            {
-                return true;
-            }
+            if("Commit".equals(task.getOperation()))            
+                commitOrderMap.put(task.getTransaction(), schedule.indexOf(task));            
         }
-        return false;
-    }
-    
-    private boolean checkCommit(){
-        List<String> list = new ArrayList<>();
-        for (int i=1; i <= noOfTransactions; i++)    
-        {
-            for(Task task : adjList[i-1])
-            {
-                list.add(task.getOperation());
-            }
-        }
-        System.out.println(list);
-
-        return false;
     }
 }
 

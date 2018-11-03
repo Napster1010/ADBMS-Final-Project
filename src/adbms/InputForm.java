@@ -7,6 +7,7 @@ package adbms;
 
 import java.awt.Font;
 import java.util.LinkedList;
+import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
@@ -342,7 +343,21 @@ public class InputForm extends javax.swing.JFrame {
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         //Firstly form a linked list of type Task class objects. The list will be made rom the inputs provided by the user
         createSchedule();
-        new SerializabilityResult(this, schedule).setVisible(true);
+
+        //------------------------------------------------------------
+        
+        //Serializability Processor
+        SerializabilityProcessor processor = new SerializabilityProcessor(schedule, Integer.parseInt(txtNumberOfTransactions.getText()));
+        boolean isConflictSerializable = processor.checkSerializability();
+        List<String> cycles = null;
+        if(!isConflictSerializable)
+        {
+            cycles = processor.getCycles();
+        }    
+        this.setVisible(false);
+        //--------------------------------------
+
+        new SerializabilityResult(this, schedule, cycles).setVisible(true);
     }//GEN-LAST:event_jButton4ActionPerformed
 
     //Creates a schedule in the form of a linked list consisting of Task objects
@@ -366,13 +381,6 @@ public class InputForm extends javax.swing.JFrame {
             Task task = new Task(operation, transaction, dataItem);
             schedule.add(task);            
         }
-        //------------------------------------------------------------
-        
-        //Serializability Processor
-        SerializabilityProcessor processor = new SerializabilityProcessor(schedule, Integer.parseInt(txtNumberOfTransactions.getText()));
-        boolean isConflictSerializable = processor.checkSerializability();
-        this.setVisible(false);
-        //--------------------------------------
     }
     
     
@@ -384,7 +392,12 @@ public class InputForm extends javax.swing.JFrame {
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
         createSchedule();
-        new RecoverabilityResult(this, schedule).setVisible(true);
+        
+        RecoverabilityProcessor processor = new RecoverabilityProcessor(schedule, Integer.parseInt(txtNumberOfTransactions.getText()));
+        processor.checkRecoverability();
+        String result = processor.getResult();
+        
+        new RecoverabilityResult(this, schedule, result).setVisible(true);
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
@@ -424,11 +437,9 @@ public class InputForm extends javax.swing.JFrame {
         { 
             if(cmbTransaction.getSelectedItem() != null)
             {
-                int delete;
-                delete = Integer.parseInt((String) cmbTransaction.getSelectedItem());
                 tableModel = (DefaultTableModel) jTable1.getModel();
                 tableModel.addRow(new Object[]{cmbAction.getSelectedItem(), cmbTransaction.getSelectedItem(), ""});
-                cmbTransaction.removeItemAt(delete-1);
+                cmbTransaction.removeItem(cmbTransaction.getSelectedItem());
             }
             
             else
