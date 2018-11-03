@@ -342,7 +342,7 @@ public class InputForm extends javax.swing.JFrame {
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         //Firstly form a linked list of type Task class objects. The list will be made rom the inputs provided by the user
         createSchedule();
-        
+        new SerializabilityResult(this, schedule).setVisible(true);
     }//GEN-LAST:event_jButton4ActionPerformed
 
     //Creates a schedule in the form of a linked list consisting of Task objects
@@ -372,9 +372,7 @@ public class InputForm extends javax.swing.JFrame {
         SerializabilityProcessor processor = new SerializabilityProcessor(schedule, Integer.parseInt(txtNumberOfTransactions.getText()));
         boolean isConflictSerializable = processor.checkSerializability();
         this.setVisible(false);
-        new SerializabilityResult(this, schedule).setVisible(true);
         //--------------------------------------
-
     }
     
     
@@ -385,6 +383,8 @@ public class InputForm extends javax.swing.JFrame {
     
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
+        createSchedule();
+        new RecoverabilityResult(this, schedule).setVisible(true);
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
