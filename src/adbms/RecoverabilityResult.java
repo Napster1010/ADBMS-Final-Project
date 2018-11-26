@@ -49,9 +49,10 @@ public class RecoverabilityResult extends javax.swing.JFrame {
             tableModel.addRow(new Object[]{schedule.get(i).getOperation(), schedule.get(i).getTransaction(), schedule.get(i).getDataItem()});
         }        
         
-        if(result.size() > 1)
+        if(result.size() >= 1)
         {
-            jTextArea1.setText("The given Schedule is Not Recoverable as:\n");
+            jTextArea1.setText("The given Schedule is Not Recoverable as:");
+            jTextArea1.append("\n--------------------------------------------\n");
             for (String print : result) 
             jTextArea1.append("-> " + print + "\n");
         }

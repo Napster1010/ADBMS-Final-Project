@@ -56,7 +56,6 @@ public class SerializabilityProcessor {
         //Implemented
         formPrecedenceGraph();
         showPrecedenceGraph();
-        showSerializableSchedule();
         
         //Yet to be implemented
         boolean isCyclic = hasCycle();       
@@ -193,24 +192,4 @@ public class SerializabilityProcessor {
         
         return adjacentNodes;
     }
-    
-    void showSerializableSchedule()
-    {
-        int Largest = 0;
-        for(int i=0; i<noOfTransactions; i++)
-        {
-            int currentLargest = adjList[i].size();
-            if(Largest < currentLargest)
-            {
-                Largest = currentLargest;
-            }
-            else 
-            {
-                continue;
-            }
-        }
-           System.out.println("The equivalent serial schedule could be:");
-          
-    }
-    
 }
