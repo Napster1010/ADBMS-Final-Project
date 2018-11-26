@@ -395,7 +395,7 @@ public class InputForm extends javax.swing.JFrame {
         
         RecoverabilityProcessor processor = new RecoverabilityProcessor(schedule, Integer.parseInt(txtNumberOfTransactions.getText()));
         processor.checkRecoverability();
-        String result = processor.getResult();
+        List result = processor.getResult();
         
         new RecoverabilityResult(this, schedule, result).setVisible(true);
     }//GEN-LAST:event_jButton5ActionPerformed

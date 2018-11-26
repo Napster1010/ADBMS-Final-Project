@@ -7,6 +7,7 @@ package adbms;
 
 import java.awt.Font;
 import java.util.LinkedList;
+import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -23,7 +24,7 @@ public class RecoverabilityResult extends javax.swing.JFrame {
     /**
      * Creates new form SerializabilityResult
      */
-    public RecoverabilityResult(InputForm parent, LinkedList<Task> schedule, String result) {
+    public RecoverabilityResult(InputForm parent, LinkedList<Task> schedule, List<String> result) {
 
         this.parent = parent;
         this.schedule = schedule;
@@ -48,7 +49,18 @@ public class RecoverabilityResult extends javax.swing.JFrame {
             tableModel.addRow(new Object[]{schedule.get(i).getOperation(), schedule.get(i).getTransaction(), schedule.get(i).getDataItem()});
         }        
         
-        jTextArea1.setText(result);
+        if(result.size() > 1)
+        {
+            jTextArea1.setText("The given Schedule is Not Recoverable as:\n");
+            for (String print : result) 
+            jTextArea1.append("-> " + print + "\n");
+        }
+        
+        else
+        {
+            for (String print : result) 
+            jTextArea1.append(print + "\n");
+        }
     }
 
     /**
